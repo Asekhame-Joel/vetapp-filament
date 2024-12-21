@@ -17,7 +17,7 @@ public function user()
 
 public function vet()
 {
-    return $this->belongsTo(Vet::class);
+    return $this->belongsTo(Vet::class, 'vet_id');
 }
 
 }

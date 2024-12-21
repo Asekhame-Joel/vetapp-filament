@@ -14,7 +14,7 @@ class Vet extends Model
     }
     public function appointments()
     {
-        return $this->hasMany(appointments::class);
+        return $this->hasMany(appointments::class, 'vet_id');
     }
     public function medical_records(){
         return $this->hasMany(medical_records::class, 'vet_id');

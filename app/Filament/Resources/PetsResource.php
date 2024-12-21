@@ -71,6 +71,14 @@ class PetsResource extends Resource
         ];
     }
 
+    // public static function getWidgets(): array
+    // {
+    //     return [
+    //         PetsResource\Widgets\PetsOverview::class,
+    //     ];
+    // }
+
+
     public static function getPages(): array
     {
         return [

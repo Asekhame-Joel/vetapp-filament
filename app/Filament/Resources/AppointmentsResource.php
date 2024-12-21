@@ -6,6 +6,7 @@ use App\Filament\Resources\AppointmentsResource\Pages;
 use App\Filament\Resources\AppointmentsResource\RelationManagers;
 use App\Models\appointments;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -23,15 +24,26 @@ class AppointmentsResource extends Resource
     {
         return $form
             ->schema([
-                //
-            ]);
+                Section::make([
+
+                    forms\Components\DateTimePicker::make('appointment_date')->label('Appointment Date'
+                )->required(),
+                    forms\Components\Textarea::make(name: 'notes')->required(),
+                    forms\Components\Select::make('pet_id')->relationship('pet', 'name'),
+                    forms\Components\Select::make('vet_id')->relationship('vet', 'name')
+                ])
+            ])->columns(1);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                tables\Columns\TextColumn::make('appointment_date')->dateTime(),
+                tables\Columns\TextColumn::make('pet.name'),
+                tables\Columns\TextColumn::make('vet.name'),
+
+                tables\Columns\TextColumn::make('notes')  
             ])
             ->filters([
                 //

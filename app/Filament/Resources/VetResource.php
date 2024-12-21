@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\VetResource\Pages;
 use App\Filament\Resources\VetResource\RelationManagers;
+use App\Filament\Resources\VetResource\RelationManagers\AppointmentsRelationManager;
 use App\Filament\Resources\VetResource\RelationManagers\MedicalRecordsRelationManager;
 use App\Models\Vet;
 use Filament\Forms;
@@ -57,6 +58,8 @@ class VetResource extends Resource
     {
         return [
             MedicalRecordsRelationManager::class,
+            AppointmentsRelationManager::class,
+
 
         ];
     }

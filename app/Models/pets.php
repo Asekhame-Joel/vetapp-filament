@@ -20,6 +20,12 @@ public function vet()
     return $this->belongsTo(Vet::class, 'vet_id');
 }
 
+
+public function pet()
+{
+    return $this->hasMany(appointments::class);
+
+}
 public function medical_records()
     {
         return $this->hasMany(medical_records::class);
