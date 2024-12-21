@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\OwnersResource\RelationManagers;
 
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -18,17 +19,18 @@ class PetsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                    Forms\Components\TextInput::make('age'),
-             forms\Components\FileUpload::make('photo')->disk('public')->directory('photo'),
-             forms\Components\Select::make('type')->options([
-                'cat' => 'Cat',
-                'dog' => 'Dog',
-                'rabbit' => 'Rabbit',
-            ])->required()        
-            ]);
+                Section::make([
+                Forms\Components\TextInput::make('name')->required()->maxLength(255),
+                Forms\Components\TextInput::make('age'),
+                forms\Components\FileUpload::make('photo')->disk('public')->directory('photo'),
+                forms\Components\Select::make('type')->options([
+                    'cat' => 'Cat',
+                    'dog' => 'Dog',
+                    'rabbit' => 'Rabbit',
+                ])->required()
+            ])->columns(2)
+                ]);
+
     }
 
     public function table(Table $table): Table

@@ -9,12 +9,11 @@ class medical_records extends Model
 {
     public function pet()
 {
-    return $this->belongsTo(pets::class);
+    return $this->belongsTo(pets::class, 'pet_id');
 }
 
 public function vet()     
 {
-    return $this->belongsTo(users::class, 'vet_id');
+    return $this->belongsTo(Vet::class, 'vet_id');
 }
-
 }

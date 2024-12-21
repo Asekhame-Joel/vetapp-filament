@@ -42,7 +42,6 @@ class OwnersResource extends Resource
                 tables\Columns\TextColumn::make(name: 'email'),
                 tables\Columns\TextColumn::make(name: 'address'),
                 // tables\Columns\TextColumn::make(name: 'created_at'),
-
                 ])
             ->filters([
                 //

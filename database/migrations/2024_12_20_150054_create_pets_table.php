@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('owners', function (Blueprint $table) {
+        Schema::create('pets', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('owner_id')->constrained('owners')->onDelete('cascade');
+            $table->foreignId('vet_id')->nullable()->constrained('vets')->onDelete('set null');
             $table->string('name');
-            $table->string('phone');
-            $table->string('email')->unique();
-            $table->string('address');
+            $table->string('type'); // e.g., dog, cat, bird
+            $table->integer('age'); // Age in years
+            $table->string('photo')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('owners');
+        Schema::dropIfExists('pets');
     }
 };

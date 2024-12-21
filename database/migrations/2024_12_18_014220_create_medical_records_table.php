@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('pet_id');
             $table->string('diagnosis');
             $table->string('treatment');
-            $table->string('medicati;ons');
+            $table->string('medications');
             $table->foreignId('vet_id');
             $table->timestamps();   
         });
