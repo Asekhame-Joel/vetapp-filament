@@ -6,12 +6,15 @@ use App\Filament\Resources\UsersResource\Pages;
 use App\Filament\Resources\UsersResource\RelationManagers;
 use App\Models\users;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
+
 
 class UsersResource extends Resource
 {
@@ -23,7 +26,21 @@ class UsersResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Section::make([
+
+                    forms\Components\TextInput::make('name')->required(),
+                    forms\Components\TextInput::make(name: 'email')->required(),
+                    forms\Components\Select::make('role')->options([
+                        'admin' => 'Admin',
+                        'vet' => 'Vet',
+                        'receptionist' => 'Receptionist'
+                    ])->required(),
+                    forms\Components\TextInput::make(name: 'password')->password()->required()
+                    ->dehydrateStateUsing(fn (string $state): string => hash::make($state))
+        
+                ])
+
+
             ]);
     }
 
@@ -31,16 +48,18 @@ class UsersResource extends Resource
     {
         return $table
             ->columns([
+                
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('email'),
-                Tables\Columns\TextColumn::make('role')
-
+                // Tables\Columns\TextColumn::make('role')
             ])
             ->filters([
-                //
+            
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

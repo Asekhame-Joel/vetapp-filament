@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class PetsResource extends Resource
 {
     protected static ?string $model = Pets::class;
+  
 
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
 
@@ -43,7 +44,7 @@ class PetsResource extends Resource
             tables\Columns\TextColumn::make('type'),
             tables\Columns\TextColumn::make('age'),
             tables\Columns\TextColumn::make('owner.name')->searchable(),
-            tables\Columns\ImageColumn::make('photo'),
+            tables\Columns\ImageColumn::make('photo')->rounded(),
             ])
             ->filters([
                 tables\Filters\SelectFilter::make('type')->options([

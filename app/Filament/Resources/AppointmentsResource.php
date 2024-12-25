@@ -17,6 +17,15 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class AppointmentsResource extends Resource
 {
     protected static ?string $model = Appointments::class;
+    public static function canCreate(): bool
+    {
+        return auth()->user()->role === 'admin' || auth()->user()->role == 'vet';  // Only admin can create
+    }
+    public static function  canDeleteBulk($record): bool
+    {
+        return auth()->user()->role === 'admin' || auth()->user()->role == 'vet';  // Only admin can create
+    }
+
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar-date-range';
 
@@ -50,6 +59,8 @@ class AppointmentsResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

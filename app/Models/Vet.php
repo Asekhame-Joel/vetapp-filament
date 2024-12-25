@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Vet extends Model
 {
     // protected $fillable = ['name', 'email', 'phone', 'specialization'];
-
+    
+use HasFactory;
     public function pets()
     {
         return $this->hasMany(pets::class);
