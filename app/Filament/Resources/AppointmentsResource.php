@@ -17,14 +17,30 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class AppointmentsResource extends Resource
 {
     protected static ?string $model = Appointments::class;
+    public static function getEloquentQuery(): Builder
+    {
+        $user = auth()->user();
+    
+        if ($user->role === 'vet') {
+            // Filter pets assigned to the logged-in vet
+            return parent::getEloquentQuery()->where('vet_id', $user->id);
+        }
+        
+        // Admins or other roles see all pets
+        return parent::getEloquentQuery();
+    }
+    
     public static function canCreate(): bool
     {
-        return auth()->user()->role === 'admin' || auth()->user()->role == 'vet';  // Only admin can create
+        return auth()->user()->role === 'admin' || auth()->user()->role == 'receptionist';  // Only admin can create
     }
-    public static function  canDeleteBulk($record): bool
+
+
+    public static function  canDelete($record): bool
     {
-        return auth()->user()->role === 'admin' || auth()->user()->role == 'vet';  // Only admin can create
+        return auth()->user()->role === 'admin' || auth()->user()->role === 'receptionist';  // Only admin can create
     }
+    
 
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar-date-range';
@@ -36,10 +52,18 @@ class AppointmentsResource extends Resource
                 Section::make([
 
                     forms\Components\DateTimePicker::make('appointment_date')->label('Appointment Date'
-                )->required(),
+                )->required()->disabled(fn () => auth()->user()->role !== 'admin'
+                && auth()->user()->role !== 'receptionist'),
                     forms\Components\Textarea::make(name: 'notes')->required(),
-                    forms\Components\Select::make('pet_id')->relationship('pet', 'name'),
-                    forms\Components\Select::make('vet_id')->relationship('vet', 'name')
+
+                    forms\Components\Select::make('pet_id')->relationship('pet', 'name')->disabled(fn () => auth()->user()->role !== 'admin'
+                    && auth()->user()->role !== 'receptionist')
+                    ,
+                    forms\Components\Select::make('vet_id')->relationship('vet', 'name')->disabled(fn () => auth()->user()->role !== 'admin'
+                    && auth()->user()->role !== 'receptionist')->label('Vet Doctor'),
+
+                    forms\Components\Select::make('owner_id')->relationship('owner', 'name')->disabled(fn () => auth()->user()->role !== 'admin'
+                    && auth()->user()->role !== 'receptionist')
                 ])
             ])->columns(1);
     }
@@ -51,7 +75,6 @@ class AppointmentsResource extends Resource
                 tables\Columns\TextColumn::make('appointment_date')->dateTime(),
                 tables\Columns\TextColumn::make('pet.name'),
                 tables\Columns\TextColumn::make('vet.name'),
-
                 tables\Columns\TextColumn::make('notes')  
             ])
             ->filters([
@@ -64,7 +87,8 @@ class AppointmentsResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->hidden(fn () => auth()->user()->role !== 'admin'
+                     && auth()->user()->role !== 'receptionist')
                 ]),
             ]);
     }

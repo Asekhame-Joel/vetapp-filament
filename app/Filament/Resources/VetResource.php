@@ -22,13 +22,18 @@ class VetResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function canViewAny() :bool{
+        return auth()->user()->role === 'admin';
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Section::make([
                     forms\Components\TextInput::make('name'),
-                    forms\Components\TextInput::make('specialization')
+                    forms\Components\TextInput::make('specialization'),
+                    forms\Components\TextInput::make('email')->email()
                     ])->columns(1)
                 ]
                 );
@@ -38,11 +43,13 @@ class VetResource extends Resource
     {
         return $table
             ->columns([
-            tables\Columns\TextColumn::make('name'),
-            tables\Columns\TextColumn::make('specialization')
+            tables\Columns\TextColumn::make('name')->searchable(),
+            tables\Columns\TextColumn::make('specialization'),
+            tables\Columns\TextColumn::make('email')
             ])
+
             ->filters([
-                //
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

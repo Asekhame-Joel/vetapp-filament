@@ -21,6 +21,10 @@ class UsersResource extends Resource
     protected static ?string $model = Users::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    public static function canViewAny(): bool
+{
+    return auth()->user()->role === 'admin';
+}
 
     public static function form(Form $form): Form
     {
@@ -49,12 +53,11 @@ class UsersResource extends Resource
         return $table
             ->columns([
                 
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')->searchable(),
                 Tables\Columns\TextColumn::make('email'),
                 // Tables\Columns\TextColumn::make('role')
             ])
             ->filters([
-            
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

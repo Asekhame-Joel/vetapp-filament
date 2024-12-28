@@ -16,6 +16,34 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class PetsResource extends Resource
 {
     protected static ?string $model = Pets::class;
+    public static function getEloquentQuery(): Builder
+    {
+        $user = auth()->user();
+    
+        if ($user->role === 'vet') {
+            // Filter pets assigned to the logged-in vet
+            return parent::getEloquentQuery()->where('vet_id', $user->id);
+        }
+        
+    
+        // Admins or other roles see all pets
+        return parent::getEloquentQuery();
+    }
+    public static function canCreate(): bool
+{
+    return auth()->user()->role === 'admin' || auth()->user()->role === 'receptionist' ; // Only admins can view the resource
+}
+
+
+public static function canEdit($record): bool
+{
+    return auth()->user()->role === 'admin' || auth()->user()->role === 'receptionist' ; // Only admins can view the resource
+}
+public static function canDelete($record): bool
+{
+    return auth()->user()->role === 'admin' || auth()->user()->role === 'receptionist' ; // Only admins can view the resource
+}
+
   
 
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
@@ -60,8 +88,8 @@ class PetsResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                    Tables\Actions\DeleteBulkAction::make()->hidden(fn () => auth()->user()->role !== 'admin'
+                    || auth()->user()->role !== 'receptionist')                ]),
             ]);
     }
 

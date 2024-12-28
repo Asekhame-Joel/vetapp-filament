@@ -19,6 +19,11 @@ class InvoicesResource extends Resource
     protected static ?string $model = Invoices::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    public static function canCreate(): bool {
+        return auth()->user()->role === 'receptionist' && auth()->user()->role === 'admin';
+
+    }
+ 
 
     public static function form(Form $form): Form
     {
@@ -57,13 +62,16 @@ class InvoicesResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-
+                Tables\Actions\EditAction::make()
+                ->hidden(condition: fn () => auth()->user()->role !== 'receptionist' && auth()->user()->role !== 'admin' ),
+                Tables\Actions\DeleteAction::make()
+                ->hidden(condition: fn () => auth()->user()->role !== 'receptionist' && auth()->user()->role !== 'admin' ),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->hidden(condition: fn () => auth()->user()->role !== 'receptionist' && auth()->user()->role !== 'admin' ),
+
                 ]),
             ]);
     }

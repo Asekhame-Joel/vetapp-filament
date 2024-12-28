@@ -20,6 +20,7 @@ class VetFactory extends Factory
             
             'name' => $this->faker->name(),
             'specialization' => $this->faker->randomElement(['Surgery', 'Dentistry', 'Dermatology', 'Internal Medicine']),
+            'email' => $this->faker->unique()->safeEmail,
         ];
     }
 }

@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OwnersResource extends Resource
@@ -19,6 +20,11 @@ class OwnersResource extends Resource
     protected static ?string $model = Owners::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user';
+
+    public static function canViewAny(): bool
+{
+    return auth()->user()->role === 'admin' || auth()->user()->role === 'receptionist' ; // Only admins can view the resource
+}
 
     public static function form(Form $form): Form
     {

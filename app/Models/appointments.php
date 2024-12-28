@@ -21,5 +21,9 @@ public function vet()
 {
     return $this->belongsTo(Vet::class, 'vet_id');
 }
+public function owner()
+{
+    return $this->belongsTo(owners::class);
+}
 
 }

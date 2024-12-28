@@ -23,6 +23,29 @@ class MedicalRecordsResource extends Resource
     protected static ?string $navigationLabel = 'Medical Records';
     // protected static ?string $navigationBreadcrumbs = '';
 
+    public static function getEloquentQuery(): Builder
+    {
+        $user = auth()->user();
+
+        if ($user->role === 'vet') {
+            // Filter pets assigned to the logged-in vet
+            return parent::getEloquentQuery()->where('vet_id', $user->id);
+        }
+
+        // Admins or other roles see all pets
+        return parent::getEloquentQuery();
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->role === 'admin' || auth()->user()->role === 'vet';
+    }
+    public static function canEdit($record): bool
+    {
+        return auth()->user()->role === 'admin' || auth()->user()->role === 'vet';
+    }
+
+
     public static function form(Form $form): Form
     {
         return $form
@@ -31,15 +54,19 @@ class MedicalRecordsResource extends Resource
                     forms\Components\Textarea::make('condition')->required(),
                     forms\Components\Textarea::make('treatment')->required(),
                     forms\Components\DateTimePicker::make('recorded_at')->required(),
-                    forms\Components\Select::make('pet_id')->relationship('pet', 'name'),
+
+                    forms\Components\Select::make('pet_id')->relationship('pet', 'name')
+                    ->disabled(fn () => auth()->user()->role !== 'vet' && auth()->user()->role !== 'admin' ),
+
                     forms\Components\Select::make('vet_id')->relationship('vet', 'name')
-                    ->label('Vet Doctor')->columns(3),
+                        ->label('Vet Doctor')->hidden(fn() => auth()->user()->role !== 'admin')
+                        ->columns(3),
                     // forms\Components\Select::make('vet_id')->relationship('vet', 'name')->label('Vet Doctor')
 
                 ])
-                
-                
-                ->columns(2)
+
+
+                    ->columns(2)
             ]);
     }
 
@@ -57,10 +84,13 @@ class MedicalRecordsResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->hidden(fn() => auth()->user()->role !== 'admin'
+                        && auth()->user()->role !== 'receptionist'),
                 ]),
             ]);
     }

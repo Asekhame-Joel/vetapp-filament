@@ -22,5 +22,9 @@ public function owner()
 {
     return $this->belongsTo(owners::class, 'owner_id');
 }
+public function pet()
+{
+    return $this->belongsTo(Pets::class);
+}
 
 }

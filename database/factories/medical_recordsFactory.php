@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\appointments;
 use App\Models\pets;
 use App\Models\Vet;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,6 +22,7 @@ class medical_recordsFactory extends Factory
         return [
             'pet_id' => pets::factory(), // Create a related pet
             'vet_id' => Vet::factory(), // Create a related pet 
+            'appointment_id' => appointments::factory(), // Create a related pet 
             'condition' => $this->faker->word(),
             'treatment' => $this->faker->sentence(),
             'recorded_at' => $this->faker->date(),
